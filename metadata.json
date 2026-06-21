@@ -1,0 +1,6 @@
+{
+  "name": "Bixbott Agent Console",
+  "description": "Bixbott AI core agent dashboard with multi-service supervision and live interactive repository analysis for security and systems engineering.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

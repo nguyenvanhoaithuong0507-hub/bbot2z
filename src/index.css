@@ -1,0 +1,70 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400;1,600&family=JetBrains+Mono:wght@400;500;600&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-serif: "Playfair Display", Georgia, Cambria, "Times New Roman", Times, serif;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
+}
+
+/* Scrollbars customized to look like technical system consoles */
+.scrollbar-custom::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+.scrollbar-custom::-webkit-scrollbar-track {
+  background: #050505;
+}
+
+.scrollbar-custom::-webkit-scrollbar-thumb {
+  background: #1f1f23;
+  border-radius: 4px;
+}
+
+.scrollbar-custom::-webkit-scrollbar-thumb:hover {
+  background: #f27d26;
+}
+
+.scoller-custom::-webkit-scrollbar {
+  width: 4px;
+  height: 4px;
+}
+
+.scoller-custom::-webkit-scrollbar-track {
+  background: #050505;
+}
+
+.scoller-custom::-webkit-scrollbar-thumb {
+  background: #1f1f23;
+  border-radius: 2px;
+}
+
+.scoller-custom::-webkit-scrollbar-thumb:hover {
+  background: #f27d26;
+}
+
+@keyframes bixbottPulse {
+  0%, 100% {
+    opacity: 0.9;
+    transform: scale(1);
+    box-shadow: 0 0 6px rgba(16, 185, 129, 0.4);
+  }
+  50% {
+    opacity: 0.55;
+    transform: scale(1.2);
+    box-shadow: 0 0 14px rgba(16, 185, 129, 0.85);
+  }
+}
+
+.status-pulse {
+  animation: bixbottPulse 2.4s infinite ease-in-out;
+}
+
+.bixbott-rotate svg {
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.bixbott-rotate:hover svg {
+  transform: rotate(180deg);
+}
