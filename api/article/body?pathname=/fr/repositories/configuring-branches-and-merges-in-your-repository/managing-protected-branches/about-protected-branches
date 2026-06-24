@@ -1,0 +1,172 @@
+# À propos des branches protégées
+
+Vous pouvez protéger les branches importantes en définissant des règles de protection des branches, qui déterminent si les collaborateurs peuvent supprimer ou forcer les envois vers la branche, et qui définissent les exigences pour tous les envois vers la branche, comme la réussite des contrôles d’état ou un historique linéaire des validations.
+
+## À propos des règles de protection de branche
+
+> \[!TIP] Si vous utilisez des règles de protection de branche qui nécessitent des contrôles de statut spécifiques, assurez-vous que les noms de tâches sont uniques dans tous les workflows. L’utilisation du même nom de tâche dans plusieurs flux de travail peut entraîner des résultats de vérification d’état ambigus et bloquer la fusion des pull requests. Consultez « [À propos des vérifications d’état](/fr/pull-requests/collaborating-with-pull-requests/collaborating-on-repositories-with-code-quality-features/about-status-checks) ».
+
+Vous pouvez imposer certains workflows ou exigences avant qu'un collaborateur puisse envoyer des modifications à une branche de votre dépôt, y compris la fusion d'une pull request dans la branche, en créant une règle de protection de branche. Les acteurs peuvent être ajoutés uniquement pour contourner les listes quand le référentiel appartient à une organisation.
+
+Par défaut, chaque règle de protection de branche désactive les envois (push) forcés aux branches correspondantes, et empêche la suppression de celles-ci. Vous pouvez éventuellement désactiver ces restrictions et activer des paramètres de protection de branche supplémentaires.
+
+Par défaut, les restrictions d’une règle de protection des branches ne s’appliquent pas aux personnes qui ont des autorisations d’administrateur sur le dépôt ni aux rôles personnalisés avec l’autorisation « Contourner les protections de branche ». Vous pouvez, si vous le souhaitez, appliquer les restrictions également aux administrateurs et aux rôles qui ont l’autorisation de « contourner les protections de branche ». Pour plus d’informations, consultez « [Gestion des rôles de référentiel personnalisés pour une organisation](/fr/enterprise-cloud@latest/organizations/managing-user-access-to-your-organizations-repositories/managing-repository-roles/managing-custom-repository-roles-for-an-organization) ».
+
+Vous pouvez créer une règle de protection de branche dans un référentiel pour une branche spécifique, pour toutes les branches ou pour toute branche qui correspond à un modèle de nom que vous spécifiez avec la syntaxe `fnmatch`. Par exemple, pour protéger toutes les branches contenant le mot `release`, vous pouvez créer une règle de branche pour `*release*`. Pour plus d’informations sur les modèles de nom de branche, consultez [Gestion d’une règle de protection de branche](/fr/repositories/configuring-branches-and-merges-in-your-repository/managing-protected-branches/managing-a-branch-protection-rule).
+
+Vous pouvez configurer une demande de tirage pour fusionner automatiquement lorsque toutes les conditions de fusion sont remplies. Pour plus d’informations, consultez « [Fusion automatique d'une pull request](/fr/pull-requests/collaborating-with-pull-requests/incorporating-changes-from-a-pull-request/automatically-merging-a-pull-request) ».
+
+> \[!NOTE]
+> Une seule règle de protection des branches peut s'appliquer à la fois, ce qui signifie qu'il peut être difficile de savoir quelle règle s'appliquera lorsque plusieurs versions d'une règle ciblent la même branche. Pour plus d’informations sur une alternative aux règles de protection de branche, consultez [À propos des ensembles de règles](/fr/repositories/configuring-branches-and-merges-in-your-repository/managing-rulesets/about-rulesets).
+
+## À propos des paramètres de protection de branche
+
+Pour chaque règle de protection de branche, vous pouvez choisir d’activer ou de désactiver les paramètres suivants.
+
+* [Exiger des revues de pull request avant de fusionner](#require-pull-request-reviews-before-merging)
+* [Exiger des vérifications d’état avant la fusion](#require-status-checks-before-merging)
+* [Exiger la résolution de la conversation avant de fusionner](#require-conversation-resolution-before-merging)
+* [Exiger des validations signées](#require-signed-commits)
+* [Exiger un historique linéaire](#require-linear-history)
+* [Exiger une file d’attente de fusion](#require-merge-queue)
+* [Exiger que les déploiements réussissent avant de fusionner](#require-deployments-to-succeed-before-merging)
+* [Verrouiller une branche](#lock-branch)
+* [Ne pas autoriser le contournement des paramètres ci-dessus](#do-not-allow-bypassing-the-above-settings)
+* [Restreindre les personnes pouvant effectuer un envoi (push) à des branches correspondantes](#restrict-who-can-push-to-matching-branches)
+* [Autoriser les pushes forcés](#allow-force-pushes)
+* [Autoriser les suppressions](#allow-deletions)
+
+Pour plus d’informations sur la configuration de la protection de branche, consultez [Gestion d’une règle de protection de branche](/fr/repositories/configuring-branches-and-merges-in-your-repository/managing-protected-branches/managing-a-branch-protection-rule).
+
+### Exiger des révisions de pull request avant de fusionner
+
+Les administrateurs de référentiels ou les rôles personnalisés avec l’autorisation « modifier les règles de référentiel » peuvent exiger que toutes les demandes de tirage reçoivent un nombre spécifique de révisions d’approbation avant qu’une personne ne fusionne la demande de tirage dans une branche protégée. Vous pouvez demander des révisions d’approbation à des personnes qui ont des autorisations d’écriture sur le dépôt ou à un propriétaire de code désigné.
+
+Si vous activez les révisions requises, les collaborateurs ne peuvent effectuer de push de modifications à une branche protégée que via une pull request approuvée par le nombre requis de réviseurs disposant des autorisations d'écriture.
+
+Si une personne disposant d'autorisations d'administration choisit l'option **Demander des modifications** dans un examen, elle doit approuver la pull request avant qu'elle puisse être fusionnée. Si un réviseur qui demande des modifications sur une pull request n’est pas disponible, toute personne disposant d'autorisation d'écriture sur le dépôt peut annuler la révision bloquante.
+
+Même si tous les réviseurs obligatoires ont approuvé une demande de tirage, les collaborateurs ne peuvent pas fusionner la demande de tirage si d’autres demandes de tirage ouvertes ont une branche principale qui pointe vers le même commit avec des révisions en attente ou rejetées. Une personne avec des autorisations d’écriture doit d’abord approuver ou ignorer la révision bloquante sur les autres demandes de tirage.
+
+Si un collaborateur tente de fusionner une pull request avec des révisions en attente ou rejetées dans la branche protégée, il recevra un message d'erreur.
+
+```shell
+remote: error: GH006: Protected branch update failed for refs/heads/main.
+remote: error: Changes have been requested.
+```
+
+Si vous le souhaitez, vous pouvez choisir d'annuler les approbations de pull request caduques lorsque des commits sont poussés et affectent le diff dans la pull request. GitHub enregistre l’état du diff au moment de l'approbation d'une pull request. Cet état représente l’ensemble des modifications approuvées par le réviseur. Si le diff sort de cet état (par exemple, parce qu’un contributeur pousse de nouvelles modifications vers la branche de demande de tirage ou clique sur **Mettre à jour la branche**, ou parce qu’une demande de tirage associée est fusionnée dans la branche cible), la révision d’approbation est ignorée car considérée comme obsolète et la demande de tirage ne peut pas être fusionnée tant qu’une personne n’approuve pas une nouvelle fois le travail. Pour plus d’informations sur la branche de base, consultez [À propos des demandes de tirage (pull requests)](/fr/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/about-pull-requests).
+
+Si vous le souhaitez, vous pouvez restreindre la possibilité d’ignorer des révisions des demandes de tirage à des personnes ou équipes spécifiques. Pour plus d’informations, consultez « [Rejeter la revue d'une pull request](/fr/pull-requests/collaborating-with-pull-requests/reviewing-changes-in-pull-requests/dismissing-a-pull-request-review) ».
+
+Si vous le souhaitez, vous pouvez choisir d’exiger des révisions des propriétaires de code. Dans ce cas, toute pull request affectant un code avec un propriétaire de code doit être approuvée par celui-ci avant qu'elle ne puisse être fusionnée dans la branche protégée.
+
+En option, vous pouvez exiger que le dernier push révisable soit approuvé par une personne autre que celle qui l'a poussé. Cela signifie qu’au moins un autre réviseur autorisé approuve les modifications. Par exemple, le « dernier réviseur » peut vérifier que le dernier ensemble de modifications incorpore les commentaires d’autres révisions et n’ajoute pas de nouveau contenu non révisé.
+
+Pour les pull requests complexes qui nécessitent de nombreuses revues, exiger l'approbation d'une personne autre que la dernière personne à avoir effectué un push peut être un compromis qui évite d'avoir à rejeter toutes les revues obsolètes : avec cette option, les revues « obsolètes » ne sont pas rejetées et la pull request reste approuvée tant qu'une personne autre que celle qui a apporté les modifications les plus récentes l'approuve. Les utilisateurs qui ont déjà révisé un pull request peuvent le réapprouver après le push le plus récent pour répondre à cette exigence. Si vous craignez que les pull requests soient « détournées » (c'est-à-dire que du contenu non approuvé soit ajouté à des pull requests approuvées), il est plus sûr de rejeter les révisions obsolètes.
+
+> \[!NOTE] Si vous sélectionnez **Ignorer les approbations de demandes de tirage obsolètes lorsque de nouveaux commits sont poussés** et/ou **Demander l’approbation de la poussée révisable la plus récente**, la création manuelle du commit de fusion pour une demande de tirage (pull request) et sa poussée (push) directement vers une branche protégée échouent, sauf si le contenu de la fusion correspond exactement à la fusion générée par GitHub pour la demande de tirage.
+>
+> En outre, avec ces paramètres, l’approbation des révisions est ignorée comme obsolète si la base de fusion introduit de nouvelles modifications après l’envoi de la révision. La base de fusion est le commit qui est le dernier ancêtre commun entre la branche de rubrique et le branche de base. Si la base de fusion change, la demande de tirage ne peut pas être fusionnée tant que quelqu’un n’a pas approuvé à nouveau le travail.
+
+### Exiger des vérifications d’état avant la fusion
+
+Les vérifications d’état requises doivent avoir l’état `successful`, `skipped` ou `neutral` avant que des collaborateurs puissent apporter des modifications à une branche protégée. Les vérifications d’état requises peuvent être des vérifications ou des états de commit. Pour plus d’informations, consultez « [À propos des vérifications d’état](/fr/pull-requests/collaborating-with-pull-requests/collaborating-on-repositories-with-code-quality-features/about-status-checks) ».
+
+Vous pouvez utiliser l’API d’état de commit pour autoriser les services externes à marquer les commits avec un état approprié. Pour plus d’informations, consultez « [Points de terminaison de l’API REST pour les statuts de commit](/fr/rest/commits/statuses) ».
+
+Une fois que des vérifications d’état requises sont activées, elles doivent toutes réussir avant que des collaborateurs puissent fusionner des modifications dans la branche protégée. Une fois que toutes les vérifications d’état requises ont réussi, toutes les validations doivent être soit envoyées (push) à une autre branche, puis fusionnées, soit envoyées directement à la branche protégée.
+
+Toute personne ou intégration disposant d’autorisations d’écriture sur un dépôt peut définir l’état de toute vérification d’état dans le dépôt. Toutefois, dans certains cas, vous voudrez peut-être accepter uniquement la vérification d’état d’une GitHub App spécifique. Lorsque vous ajoutez une vérification d’état requise, vous pouvez sélectionner une application qui a récemment défini cette vérification comme source prévue des mises à jour d’état. Si l’état est défini par une autre personne ou intégration, la fusion n’est pas autorisée. Si vous sélectionnez « toute source », vous pouvez toujours vérifier manuellement l’auteur de chaque état, répertorié dans la zone de fusion.
+
+Vous pouvez configurer les vérifications d’état requises en mode « souple » ou « strict ». Le type de vérification d’état requise que vous choisissez détermine si votre branche doit être à jour avec la branche de base avant de la fusion.
+
+| Type de vérification d’état requise | Paramètre                                                                                                  | Exigences pour la fusion                                                        | Considérations                                                                                                                                                                                                                                                                                                                             |
+| ----------------------------------- | ---------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| **Strict**                          | La case à cocher **Exiger que les branches soient à jour avant la fusion** est activée.                    | La branche **doit** être à jour avec la branche de base avant la fusion.        | Il s’agit du comportement par défaut pour les vérifications d’état requises. D’autres builds peuvent être requises, car vous devez mettre à jour la branche principale une fois que les autres collaborateurs ont mis à jour la branche cible.                                                                                             |
+| **Lâches**                          | La case à cocher **Exiger que les branches soient à jour avant la fusion** n’est **pas** activée.          | La branche **ne doit pas** être à jour avec la branche de base avant la fusion. | Vous aurez moins de builds requises, car vous n’aurez pas besoin de mettre à jour la branche principale après que d’autres collaborateurs auront fusionné des demandes de tirage. Des vérifications d’état peuvent échouer après que vous avez fusionné votre branche s’il existe des modifications incompatibles avec la branche de base. |
+| **Désactivé**                       | La case à cocher **Exiger la réussite des vérifications d’état avant de fusionner** n’est **pas** activée. | La branche n’a aucune restriction de fusion.                                    | Si les vérifications d’état requises ne sont pas activées, des collaborateurs peuvent fusionner la branche à tout moment, qu’elle soit ou non à jour avec la branche de base. Cela augmente la possibilité de modifications incompatibles.                                                                                                 |
+
+Pour obtenir des informations de résolution des problèmes, consultez [Résolution des problèmes liés aux vérifications de statut requises](/fr/pull-requests/collaborating-with-pull-requests/collaborating-on-repositories-with-code-quality-features/troubleshooting-required-status-checks).
+
+### Exiger la résolution de la conversation avant de fusionner
+
+Exige que tous les commentaires sur le pull request doivent être résolus avant que celui-ci puisse être fusionné dans une branche protégée. Cela garantit que tous les commentaires ont été traités ou ont fait l’objet d’un accusé de réception avant la fusion.
+
+### Exiger des validations signées
+
+Lorsque vous activez la signature de validation requise sur une branche, des contributeurs et des bots ne peuvent envoyer (push) à la branche que des validations signées et vérifiées. Pour plus d’informations, consultez « [À propos de la vérification des signatures de commit](/fr/authentication/managing-commit-signature-verification/about-commit-signature-verification) ».
+
+> \[!NOTE]
+
+> * Si vous avez activé le mode vigilant, ce qui indique que vos validations seront toujours signées, toutes les validations que GitHub identifie comme « Partiellement vérifiés » sont autorisées sur des branches exigeant des validations signées. Pour plus d’informations sur le mode vigilant, consultez [Affichage des états de vérification pour tous vos commits](/fr/authentication/managing-commit-signature-verification/displaying-verification-statuses-for-all-of-your-commits).
+> * Si un collaborateur envoie (push) une validation non signée à une branche qui exige des signatures de validation, ce collaborateur devra rebaser la validation pour inclure une signature vérifiée, puis effectuer un envoi (push) forcé de la validation réécrite à la branche.
+
+Vous pouvez toujours envoyer (push) des validations locales à la branche si elles sont signées et vérifiées. Vous pouvez également fusionner des validations signées et vérifiées dans la branche à l’aide d’une demande de tirage. En revanche, vous ne pouvez pas effectuer de « squash and merge » sur une demande de tirage dans la branche sur GitHub, sauf si vous en êtes l’auteur. Vous pouvez effectuer un « squash » sur des demandes de tirage et les fusionner localement. Pour plus d’informations, consultez « [Consulter des pull requests localement](/fr/pull-requests/collaborating-with-pull-requests/reviewing-changes-in-pull-requests/checking-out-pull-requests-locally) ».
+
+Pour plus d’informations sur les méthodes de fusion, consultez [À propos des méthodes de fusion sur GitHub](/fr/repositories/configuring-branches-and-merges-in-your-repository/configuring-pull-request-merges/about-merge-methods-on-github).
+
+### Exiger un historique linéaire
+
+L’application d’un historique de validation linéaire empêche les collaborateurs de pousser des validations de fusion vers la branche. Cela signifie que toutes les demandes de tirage fusionnées dans la branche protégée doivent utiliser une fusion « squash » ou « rebase ». Un historique de validation strictement linéaire peut aider les équipes à inverser des modifications plus facilement. Pour plus d’informations sur les méthodes de fusion, consultez [À propos des fusions de demande de tirage](/fr/pull-requests/collaborating-with-pull-requests/incorporating-changes-from-a-pull-request/about-pull-request-merges).
+
+Avant de pouvoir exiger un historique de validation linéaire, votre dépôt doit autoriser une fusion « squash » ou « rebase ». Pour plus d’informations, consultez « [Configuration des fusions de pull request](/fr/repositories/configuring-branches-and-merges-in-your-repository/configuring-pull-request-merges) ».
+
+### Nécessiter une file d'attente pour la fusion
+
+Une file d’attente de fusion permet d’augmenter la vitesse en automatisant les fusions de demandes de tirage dans une branche occupée et en veillant à ce que la branche ne soit jamais interrompue par des modifications incompatibles.
+
+La file d’attente de fusion offre les mêmes avantages que la protection de branche **Exiger que les branches soient à jour avant de fusionner**, mais ne nécessite pas qu’un auteur de demande de tirage mette à jour sa branche de demande de tirage et attende que les vérifications d'état se terminent avant d’essayer de fusionner.
+
+L’utilisation d’une file d’attente de fusion est particulièrement utile sur les branches qui ont un nombre relativement élevé de demandes de tirage qui fusionnent chaque jour de nombreux utilisateurs différents.
+
+Dès qu’une demande de tirage a réussi toutes les vérifications de protection de branche nécessaires, un utilisateur avec un accès en écriture au référentiel peut ajouter cette demande de tirage à une file d’attente de fusion. La file d’attente de fusion garantit que les modifications de la demande de tirage passent toutes les vérifications d'état requises lorsqu’elles sont appliquées à la dernière version de la branche cible et aux demandes de tirage déjà dans la file d’attente.
+
+Une file d’attente de fusion peut utiliser GitHub Actions ou votre propre fournisseur de CI pour exécuter les vérifications requises sur les demandes de tirage dans une file d’attente de fusion. Pour plus d’informations, consultez « [Documentation de GitHub Actions](/fr/actions) ».
+
+GitHub fusionne la demande d'extraction selon la stratégie de fusion configurée dans la protection de la branche une fois que toutes les vérifications CI requises sont passées.
+Pour plus d’informations sur les files d’attente de fusion, consultez [Gestion d’une file d’attente de fusion](/fr/repositories/configuring-branches-and-merges-in-your-repository/configuring-pull-request-merges/managing-a-merge-queue).
+
+### Exiger que les déploiements réussissent avant de fusionner
+
+Vous pouvez exiger que des modifications aient été déployées avec succès dans des environnements spécifiques avant qu’une branche puisse être fusionnée. Par exemple, vous pouvez utiliser cette règle pour vous assurer que les modifications ont été déployées avec succès dans un environnement intermédiaire avant la fusion des modifications dans votre branche par défaut.
+
+### Verrouiller une branche
+
+Le verrouillage d’une branche rend la branche accessible en lecture seule et garantit qu’aucune validation ne peut être effectuée sur la branche. Les branches verrouillées ne peuvent pas non plus être supprimées.
+
+Par défaut, un dépôt dupliqué ne prend pas en charge la synchronisation à partir de son dépôt en amont. Vous pouvez activer **Autoriser la synchronisation de la duplication** pour tirer des modifications du dépôt en amont tout en empêchant d’autres contributions à la branche de la duplication.
+
+### Ne pas autoriser le contournement des paramètres ci-dessus
+
+Par défaut, les restrictions d’une règle de protection des branches ne s’appliquent pas aux personnes qui ont des autorisations d’administrateur sur le dépôt ni aux rôles personnalisés avec l’autorisation « Contourner les protections de branche » sur un dépôt.
+
+Vous pouvez activer ce paramètre pour appliquer les restrictions aux administrateurs et aux rôles ayant l’autorisation « Ignorer les protections de branche » aussi. Pour plus d’informations, consultez « [Gestion des rôles de référentiel personnalisés pour une organisation](/fr/enterprise-cloud@latest/organizations/managing-user-access-to-your-organizations-repositories/managing-repository-roles/managing-custom-repository-roles-for-an-organization) ».
+
+### Restreindre qui peut pousser vers les branches correspondantes
+
+Vous pouvez activer des restrictions de branche dans les dépôts publics appartenant à une organisation GitHub Free et dans tous les dépôts appartenant à une organisation utilisant GitHub Team ou GitHub Enterprise Cloud.
+
+Lorsque vous activez des restrictions de branche, seuls des utilisateurs, équipes ou applications autorisés peuvent effectuer un envoi (push) à la branche protégée. Vous pouvez afficher et modifier les utilisateurs, équipes ou applications disposant d’un accès en envoi (push) à une branche protégée dans les paramètres de la branche protégée. Lorsque des vérifications d’état sont requises, les personnes, équipes et applications disposant de l’autorisation d’effectuer un envoi (push) à une branche protégée sont toujours empêchées d’opérer une fusion dans la branche quand les vérifications requises échouent. Les personnes, équipes et applications disposant de l’autorisation d’effectuer un envoi (push) à une branche protégée doivent toujours créer une demande de tirage quand des demandes de tirage sont requises.
+
+Si vous le souhaitez, vous pouvez appliquer les mêmes restrictions à la création de branches correspondant à la règle. Par exemple, si vous créez une règle qui n’autorise qu’une certaine équipe à effectuer un envoi (push) à toutes les branches contenant le mot `release`, seuls les membres de cette équipe pourront créer une branche contenant le mot `release`.
+
+Vous ne pouvez donner l’accès en envoi (push) à une branche protégée, ou accorder l’autorisation de créer une branche correspondante, qu’à des utilisateurs, équipes ou GitHub Apps disposant d’un accès en écriture à un dépôt. Les personnes et applications disposant d’autorisations d’administration sur un dépôt sont toujours en mesure d’effectuer un envoi (push) à une branche protégée ou de créer une branche correspondante.
+
+### Autoriser les pushes forcés
+
+Par défaut, GitHub bloque les poussées forcées sur toutes les branches protégées. Lorsque vous activez les envois (push) forcés à une branche protégée, vous avez le choix entre deux groupes pouvant effectuer des envois (push) forcés :
+
+1. Autoriser toute personne disposant au moins d’autorisations d’écriture sur le dépôt à effectuer un envoi (push) forcé à la branche, y compris si cette personne dispose d’autorisations d’administration.
+2. Autorisez uniquement des personnes ou équipes spécifiques effectuer un envoi (push) forcé à la branche.
+
+Si quelqu’un effectue une poussée forcée vers une branche, la poussée forcée peut signifier que les commits sur lesquels les autres collaborateurs ont basé leur travail sont supprimés de l’historique de la branche. Des personnes peuvent avoir des conflits de fusion ou des demandes de tirage endommagées. Une poussée forcée peut également être utilisée pour supprimer des branches ou pointer une branche vers des commits qui n’ont pas été approuvés dans une demande de tirage.
+
+L’activation des envois (push) forcés ne remplace aucune autre règle de protection de branche. Par exemple, si une branche nécessite un historique de validation linéaire, vous ne pouvez envoyer (push) de force des validations de fusion à cette branche.
+
+### Autoriser les suppressions
+
+Par défaut, vous ne pouvez pas supprimer une branche protégée. Lorsque vous activez la suppression d’une branche protégée, toute personne disposant d’autorisations d’écriture sur le dépôt peut supprimer la branche.
+
+> \[!NOTE]
+> Si la branche est verrouillée, vous ne pouvez pas supprimer la branche même si vous avez l’autorisation de la supprimer.
