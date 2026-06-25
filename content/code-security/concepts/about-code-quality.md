@@ -55,3 +55,35 @@ If you want to avoid charges, disable {% data variables.product.prodname_code_qu
 {% data reusables.code-quality.codeql-supported-languages %}
 
 {% data variables.product.prodname_code_quality_short %} also performs AI-powered analysis with results displayed separately on the "**{% data variables.code-quality.recent_suggestions %}**" repository dashboard. Unlike the rule-based {% data variables.product.prodname_codeql %} analysis that scans the entire codebase and pull requests, this AI-powered analysis only examines files recently pushed to the default branch and may identify issues in languages beyond those listed above. For more information, see [AUTOTITLE](/code-security/code-quality/responsible-use/code-quality).
+
+## Where will findings appear?
+
+Once you enable {% data variables.product.prodname_code_quality_short %} for a repository, you'll see {% data variables.product.prodname_codeql %} scans for:
+
+* Every new pull request opened against the default branch
+* All existing pull requests to the default branch when they are updated, triggering a new run of CI tests
+* The whole codebase on the default branch at the time and date shown on the "{% data variables.code-quality.code_quality_ui %}" settings page
+
+In addition, you'll see an AI-powered analysis of all recent pushes to the default branch.
+
+### Pull request results
+
+When {% data variables.product.prodname_codeql %} finds rule-based problems on pull requests, you'll see comments from the `{% data variables.code-quality.pr_commenter %}`. Where possible, each comment will include a {% data variables.copilot.copilot_autofix_short %} suggestion on how to fix the problem. See [AUTOTITLE](/code-security/code-quality/tutorials/fix-findings-in-prs).
+
+If you have set up code coverage, the `{% data variables.code-quality.pr_commenter %}` also posts a coverage summary showing the aggregate coverage percentage for the PR branch compared to the default branch. See [AUTOTITLE](/code-security/how-tos/maintain-quality-code/interpret-results#viewing-code-coverage-on-pull-requests).
+
+### Default branch results
+
+{% data variables.product.prodname_code_quality_short %} findings on the default branch are reported on "{% data variables.code-quality.code_quality_ui %}" pages on the **{% data variables.product.prodname_security_and_quality_tab %}** tab for the repository:
+
+* **{% data variables.code-quality.all_findings %}** shows the results of {% data variables.product.prodname_codeql %} quality analysis. See [AUTOTITLE](/code-security/code-quality/tutorials/improve-your-codebase).
+* **{% data variables.code-quality.recent_suggestions %}** shows the results of AI-powered analysis of the files most recently pushed to the default branch. See [AUTOTITLE](/code-security/code-quality/tutorials/improve-recent-merges).
+
+### Scan information
+
+Each {% data variables.product.prodname_codeql %} analysis will use {% data variables.product.prodname_actions %} minutes and can be seen on the **Actions** tab of the repository as a run of the dynamic "{% data variables.code-quality.workflow_name_actions %}" workflow.
+
+## Next steps
+
+* **For your repository or organization:** Turn on {% data variables.product.prodname_code_quality_short %} to start generating results. See [AUTOTITLE](/code-security/how-tos/maintain-quality-code/enable-code-quality).
+* **For your enterprise:** Ensure repositories in your enterprise can enable {% data variables.product.prodname_code_quality_short %}. See [AUTOTITLE](/code-security/how-tos/secure-at-scale/configure-enterprise-security/configure-specific-tools/allow-github-code-quality-in-enterprise).
