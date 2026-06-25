@@ -1,4 +1,5 @@
 import { useState, useMemo, useEffect, useRef } from "react";
+import { Analytics } from "@vercel/analytics/react";
 import { CORE_MODULES, SERVICE_LAYERS, REPOSITORIES, BIXBOTT_DOCS_CHAPTERS } from "./data";
 import { ServiceState, LogEntry, DocChapter } from "./types";
 import { ServiceCard } from "./components/ServiceCard";
@@ -1091,7 +1092,7 @@ export default function App() {
                 Hệ Thống Trực Quan Hóa & Điều Hành Dịch Vụ
               </h2>
               <p className="text-xs text-slate-400 leading-relaxed font-sans font-light max-w-3xl">
-                Kiểm soát trạng thái của các lõi dịch vụ, bật/tắt các tác vụ, đo lường độ trễ mạng lưới, xem luồng logs hoạt động và thử nghiệm các tính năng hộp cát tự trị của Bixbott.
+                Kiểm soát trạng thái của các lõi dịch vụ, bật/tắt các tác vụ, đo lường độ trễ mạng lưới, xem lu���ng logs hoạt động và thử nghiệm các tính năng hộp cát tự trị của Bixbott.
               </p>
             </div>
           </div>
@@ -1830,6 +1831,7 @@ export default function App() {
           </motion.div>
         )}
       </AnimatePresence>
+      <Analytics />
     </div>
   );
 }
